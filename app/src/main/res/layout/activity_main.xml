@@ -11,5 +11,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Turn on Blutooth"/>
-
+    <Button
+        android:id="@+id/paireddevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/turnon"
+        android:text="Get paried devices details"/>
 </RelativeLayout>

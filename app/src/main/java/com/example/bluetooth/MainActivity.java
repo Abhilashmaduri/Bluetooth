@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,20 +14,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Set;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button turnon;
+    Button turnon,paireddevices;
     BluetoothAdapter bluetoothAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
       turnon=findViewById(R.id.turnon);
-
+      paireddevices=findViewById(R.id.paireddevices);
       bluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
 
       turnon.setOnClickListener(this);
-
+      paireddevices.setOnClickListener(this);
 
     }
  BroadcastReceiver broadcastReceiver=new BroadcastReceiver() {
@@ -88,6 +91,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+        else if (v.getId()==R.id.paireddevices)
+        {
+            pariedInfo();
+        }
+    }
+
+    private void pariedInfo() {
+       if (bluetoothAdapter!=null)
+       {
+           Set<BluetoothDevice> pariedDevices=bluetoothAdapter.getBondedDevices();
+           if (pariedDevices.size()>0)
+           {
+               for (BluetoothDevice device:pariedDevices)
+               {
+                   String deviceName=device.getName();
+                   String address=device.getAddress();
+                   Toast.makeText(this, " Device name:"+deviceName+"\n Address:"+address, Toast.LENGTH_SHORT).show();
+               }
+           }
+       }
     }
 
     @Override
