@@ -17,4 +17,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/turnon"
         android:text="Get paried devices details"/>
+    <Button
+        android:id="@+id/ScanBluetoothDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/paireddevices"
+        android:text="Scan nearby Bluetooth Devices"
+        />
 </RelativeLayout>

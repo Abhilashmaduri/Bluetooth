@@ -2,7 +2,9 @@ package com.example.bluetooth;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -18,7 +20,7 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button turnon,paireddevices;
+    Button turnon,paireddevices,ScanBluetoothDevices;
     BluetoothAdapter bluetoothAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,8 +29,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
       turnon=findViewById(R.id.turnon);
       paireddevices=findViewById(R.id.paireddevices);
       bluetoothAdapter=BluetoothAdapter.getDefaultAdapter();
-
+     ScanBluetoothDevices=findViewById(R.id.ScanBluetoothDevices);
       turnon.setOnClickListener(this);
+      ScanBluetoothDevices.setOnClickListener(this);
       paireddevices.setOnClickListener(this);
 
     }
@@ -58,11 +61,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      }
  };
 
+    BroadcastReceiver foundreceiver=new BroadcastReceiver() {
+        @Override
+         public void onReceive(Context context, Intent intent) {
+            String action=intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action))
+            {
+                BluetoothDevice device=intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String devicename=device.getName();
+                String deviceHardwareAddress=device.getAddress();
+
+                Toast.makeText(context, ""+devicename+" "+deviceHardwareAddress, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
     @Override
     protected void onStart() {
         super.onStart();
         IntentFilter intent=new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(broadcastReceiver,intent);
+
+        IntentFilter scanningIntent=new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(foundreceiver,scanningIntent);
     }
 
     @Override
@@ -95,12 +116,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         {
             pariedInfo();
         }
+        else if (v.getId()==R.id.ScanBluetoothDevices)
+        {
+            scanForBluetoothDevices();
+        }
+    }
+
+    private void scanForBluetoothDevices() {
+        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},2);
+        if (bluetoothAdapter!=null)
+            bluetoothAdapter.startDiscovery();
+
     }
 
     private void pariedInfo() {
        if (bluetoothAdapter!=null)
        {
-           Set<BluetoothDevice> pariedDevices=bluetoothAdapter.getBondedDevices();
+           Set<BluetoothDevice> pariedDevices=bluetoothAdapter.getBondedDevices(); //to get paired devices list
            if (pariedDevices.size()>0)
            {
                for (BluetoothDevice device:pariedDevices)
