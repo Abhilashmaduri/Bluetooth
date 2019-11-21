@@ -24,4 +24,17 @@
         android:layout_below="@id/paireddevices"
         android:text="Scan nearby Bluetooth Devices"
         />
+    <Button
+        android:id="@+id/MakeDeviceDiscoverable"
+        android:layout_below="@id/ScanBluetoothDevices"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Make device visible to others"
+        />
+    <ListView
+        android:id="@+id/ListviewForScannedDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/MakeDeviceDiscoverable"
+        />
 </RelativeLayout>
